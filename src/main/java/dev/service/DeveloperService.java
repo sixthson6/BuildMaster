@@ -1,5 +1,6 @@
 package dev.service;
 
+import dev.dto.DeveloperDTO;
 import dev.model.Developer;
 import dev.model.Task;
 import dev.model.Project;
@@ -9,9 +10,11 @@ import dev.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -91,5 +94,17 @@ public class DeveloperService {
 
     public List<Developer> getAllDevelopers() {
         return developerRepository.findAll();
+    }
+
+    public DeveloperDTO toDTO(Developer developer) {
+        return DeveloperDTO.builder()
+                .id(developer.getId())
+                .name(developer.getName())
+                .email(developer.getEmail())
+                .skills(developer.getSkills())
+                .projectIds(developer.getProjects() != null
+                        ? developer.getProjects().stream().map(Project::getId).collect(Collectors.toSet())
+                        : Collections.emptySet())
+                .build();
     }
 }

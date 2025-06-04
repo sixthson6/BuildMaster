@@ -1,11 +1,15 @@
 package dev.service;
 
+import dev.dto.ProjectDTO;
+import dev.model.Developer;
 import dev.model.Project;
+import dev.model.Task;
 import dev.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,5 +43,22 @@ public class ProjectService {
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
     }
+
+    public ProjectDTO toDTO(Project project) {
+        return ProjectDTO.builder()
+                .id(project.getId())
+                .name(project.getName())
+                .description(project.getDescription())
+                .deadline(project.getDeadline())
+                .status(project.getStatus().name())  // if enum
+                .taskIds(project.getTasks().stream()
+                        .map(Task::getId)
+                        .collect(Collectors.toSet()))
+                .developerIds(project.getDevelopers().stream()
+                        .map(Developer::getId)
+                        .collect(Collectors.toSet()))
+                .build();
+    }
+
 }
 

@@ -1,6 +1,7 @@
 package dev.controller;
 
 
+import dev.dto.DeveloperDTO;
 import dev.model.Developer;
 import dev.service.DeveloperService;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/developers")
@@ -37,8 +39,15 @@ public class DeveloperController {
         return ResponseEntity.ok(developerService.getDeveloper(id));
     }
 
+//    @GetMapping
+//    public ResponseEntity<List<Developer>> getAllDevelopers() {
+//        return ResponseEntity.ok(developerService.getAllDevelopers());
+//    }
     @GetMapping
-    public ResponseEntity<List<Developer>> getAllDevelopers() {
-        return ResponseEntity.ok(developerService.getAllDevelopers());
+    public List<DeveloperDTO> getAllDevelopers() {
+        return developerService.getAllDevelopers()
+                .stream()
+                .map(developerService::toDTO)
+                .collect(Collectors.toList());
     }
 }
